@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poa Internet Password Security Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: purple;
+            color: white;
+            padding: 10px 0;
+            font-size: 24px;
+        }
+        footer {
+            background-color: purple;
+            color: white;
+            padding: 10px 0;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            text-align: center;
+        }
+        .container {
+            width: 40%;
+            margin: 80px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: purple;
+        }
+        input[type="password"] {
+            width: 80%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: purple;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: darkviolet;
+        }
+        .strength {
+            margin-top: 10px;
+            font-weight: bold;
+            display: none;
+        }
+        .criteria {
+            text-align: left;
+            width: 80%;
+            margin: auto;
+            padding: 10px;
+        }
+        .criteria p {
+            font-size: 14px;
+            margin: 5px 0;
+            padding: 5px;
+        }
+        .valid {
+            color: green;
+        }
+        .invalid {
+            color: red;
+        }
+        .show-password {
+            cursor: pointer;
+            color: purple;
+            text-decoration: underline;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    Poa Internet Password Security Checker
+</header>
+
+<div class="container">
+    <h1>Password Strength Checker</h1>
+    <p>Check the strength of your password for better security.</p>
+
+    <label for="password">Enter Password:</label><br>
+    <input type="password" id="password" onkeyup="checkStrength()" required>
+    <br>
+    <button onclick="checkStrength()">Check Strength</button>
+
+    <p class="strength" id="strengthText"></p>
+
+    <div class="criteria">
+        <p id="length" class="invalid">❌ At least 8 characters</p>
+        <p id="lowercase" class="invalid">❌ At least one lowercase letter</p>
+        <p id="uppercase" class="invalid">❌ At least one uppercase letter</p>
+        <p id="digit" class="invalid">❌ At least one number</p>
+        <p id="special" class="invalid">❌ At least one special character (!@#$%^&*()-+)</p>
+    </div>
+
+    <span class="show-password" onclick="togglePassword()">Show Password</span>
+</div>
+
+<footer>
+    Copyright & Designed by Kirui
+</footer>
+
+<script>
+    function checkStrength() {
+        let password = document.getElementById("password").value;
+        let strengthText = document.getElementById("strengthText");
+
+        let hasLowercase = /[a-z]/.test(password);
+        let hasUppercase = /[A-Z]/.test(password);
+        let hasDigit = /\d/.test(password);
+        let hasSpecial = /[!@#$%^&*()\-\+]/.test(password);
+        let hasLength = password.length >= 8;
+
+        // Update criteria visually
+        updateCriteria("length", hasLength);
+        updateCriteria("lowercase", hasLowercase);
+        updateCriteria("uppercase", hasUppercase);
+        updateCriteria("digit", hasDigit);
+        updateCriteria("special", hasSpecial);
+
+        let strength = "Weak";
+        let color = "red";
+
+        if (hasLength && hasLowercase && hasUppercase && hasDigit && hasSpecial) {
+            strength = "Strong";
+            color = "green";
+        } else if ((hasLength && hasLowercase && hasUppercase) || (hasLength && hasDigit && hasSpecial)) {
+            strength = "Moderate";
+            color = "orange";
+        }
+
+        strengthText.innerHTML = `Password Strength: <strong style='color:${color};'>${strength}</strong>`;
+        strengthText.style.display = "block";  // Show result
+    }
+
+    function updateCriteria(id, isValid) {
+        let element = document.getElementById(id);
+        if (isValid) {
+            element.classList.remove("invalid");
+            element.classList.add("valid");
+            element.innerHTML = `✅ ${element.innerHTML.slice(2)}`;
+        } else {
+            element.classList.remove("valid");
+            element.classList.add("invalid");
+            element.innerHTML = `❌ ${element.innerHTML.slice(2)}`;
+        }
+    }
+
+    function togglePassword() {
+        let passwordInput = document.getElementById("password");
+        let currentType = passwordInput.type;
+        passwordInput.type = currentType === "password" ? "text" : "password";
+    }
+</script>
+
+</body>
+</html>
